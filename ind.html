@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        #weatherInfo {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: auto;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px;
+        }
+
+        .header .search_btn {
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #DDDDDD;
+            border-radius: 32px;
+            cursor: pointer;
+        }
+
+        #textInput {
+            font-size: 16px;
+            color: #00225A;
+            font-weight: bold;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            width: fit-content;
+        }
+
+        .load {
+            width: 1.4rem;
+            height: 1.4rem;
+            border: solid .2rem #8822aa;
+            border-radius: 50%;
+        }
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .left button {
+            padding: 1rem 2rem;
+            background-color: #00225A;
+            border-radius: 2rem;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .menu_icon hr {
+            width: 32px;
+            height: 4px;
+            background-color: #00225A;
+            border: none;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="right">
+            <div class="menu_icon">
+                <hr class="menu_l1">
+                <hr class="menu_l2">
+                <hr class="menu_l3">
+            </div>
+        </div>
+
+        <div class="left">
+            <div class="search_btn">
+                <form id="textForm">
+                    <input type="text" id="textInput" placeholder="Search City here" autocomplete="off">
+                </form>
+                <div class="load"></div>
+            </div>
+            <button class="share_button">Share</button>
+        </div>
+    </header>
+
+    <div id="weatherInfo"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"
+        integrity="sha512-EZI2cBcGPnmR89wTgVnN3602Yyi7muWo8y1B3a8WmIv1J9tYG+udH4LvmYjLiGp37yHB7FfaPBo8ly178m9g4Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function abc() {
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${text}&appid=66165633a940b2d5a22bf55d59d55b7d`)
+                .then(response => response.json())
+                .then(response => {
+                    const weatherData = response;
+                    weatherInfo.innerHTML = `
+                    <table>
+                        <tr>
+                            <th colspan="2">Weather Information</th>
+                        </tr>
+                        <tr>
+                            <td>Location</td>
+                            <td>${weatherData.name} (${weatherData.coord.lat}, ${weatherData.coord.lon})</td>
+                        </tr>
+                        <tr>
+                            <td>Weather</td>
+                            <td>${weatherData.weather[0].main} (${weatherData.weather[0].description})</td>
+                        </tr>
+                        <tr>
+                            <td>Temperature</td>
+                            <td>${weatherData.main.temp}°C</td>
+                        </tr>
+                        <tr>
+                            <td>Feels Like</td>
+                            <td>${weatherData.main.feels_like}°C</td>
+                        </tr>
+                        <tr>
+                            <td>Min Temperature</td>
+                            <td>${weatherData.main.temp_min}°C</td>
+                        </tr>
+                        <tr>
+                            <td>Max Temperature</td>
+                            <td>${weatherData.main.temp_max}°C</td>
+                        </tr>
+                        <tr>
+                            <td>Humidity</td>
+                            <td>${weatherData.main.humidity}%</td>
+                        </tr>
+                        <tr>
+                            <td>Pressure</td>
+                            <td>${weatherData.main.pressure} hPa</td>
+                        </tr>
+                        <tr>
+                            <td>Wind Speed</td>
+                            <td>${weatherData.wind.speed} m/s</td>
+                        </tr>
+                        <tr>
+                            <td>Wind Direction</td>
+                            <td>${weatherData.wind.deg}°</td>
+                        </tr>
+                    </table>
+                `;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
+        let text;
+        const weatherInfo = document.getElementById('weatherInfo');
+        document.getElementById('textForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevents form submission and page reload
+            text = document.getElementById('textInput').value;
+            abc();
+        });
+    </script>
+</body>
+
+</html>
